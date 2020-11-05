@@ -1,9 +1,15 @@
 <template>
-    <div class="rides">
-        <h3>{{ title }}</h3>
-        <div v-if="content.length > 0">
-            <div v-for="(ride, index) in content" v-bind:key="index" v-bind:id="ride.id">
-                <p>ID: {{ ride.id }}</p>
+    <div class="rides m-5">
+        <h3 class="text-lg">{{ title }}</h3>
+        <div class="grid grid-cols-3 xl:grid-cols-5 place-content-center mt-8"
+          v-if="content.length > 0">
+            <div class="box-content border-2 m-3 p-3"
+              v-for="(ride, index) in content"
+              v-bind:key="index"
+              v-bind:id="ride.id"
+              v-bind:class="{ 'bg-red-500': ride.distance > 2 }"
+            >
+                <p>Ride ID: {{ ride.id }}</p>
                 <p>Distance: {{ ride.distance }}</p>
                 <p>Start time: {{ ride.startTime }}</p>
                 <p>Duration: {{ ride.duration }}</p>
@@ -31,7 +37,7 @@ export default {
             const path = 'http://localhost:5000/rides';
             axios.get(path)
             .then((response) => {
-                if (response.data.code == 200) {
+                if (response.data.status_code == 200) {
                     this.content = response.data.data;
                 } else {
                     this.error = response.data.message;
