@@ -1,8 +1,8 @@
 <template>
-  <div id="app">
-      Taxi Rides
-    <router-view/>
-  </div>
+    <div id="app">
+        <h1>Taxi Rides</h1>
+        <router-view/>
+    </div>
 </template>
 
 <style>
