@@ -6,9 +6,13 @@ Vue.use(VueRouter)
 
 const routes = [
     {
-      path: '/rides',
-      name: 'RideList',
-      component: RideList,
+        path: '/',
+        name: 'RideList',
+        component: RideList,
+    },
+    {
+        path: '/rides',
+        redirect: '/'
     }
 ]
 
