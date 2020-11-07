@@ -1,6 +1,6 @@
 import json
 
-from tests.config import app, client
+from tests.conftest import app, client
 
 
 def test_index(client):
