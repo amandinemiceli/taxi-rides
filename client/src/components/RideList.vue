@@ -33,9 +33,9 @@ export default {
         };
     },
     methods: {
-        getMessage() {
-            const path = 'http://localhost:5000/rides';
-            axios.get(path)
+        getRideDetails() {
+            const API_PATH = 'http://localhost:5000';
+            axios.get(API_PATH + '/rides')
             .then((response) => {
                 if (response.data.status_code == 200) {
                     this.content = response.data.data;
@@ -49,7 +49,7 @@ export default {
         },
     },
     created() {
-        this.getMessage();
+        this.getRideDetails();
     },
 };
 </script>
