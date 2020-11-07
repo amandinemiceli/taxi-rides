@@ -2,6 +2,14 @@
 node_modules
 /dist
 
+# Venv
+lib/
+bin/
+pyvenv.cfg
+
+# Unit test / coverage reports
+.pytest_cache/
+__pycache__/
 
 # local env files
 .env.local
