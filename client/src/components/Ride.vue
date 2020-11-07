@@ -1,15 +1,29 @@
 <template>
     <div>
-        <div v-bind:id="ride.id">
-            <p>Ride: {{ ride.id }}</p>
+        <button class="focus:outline-none"
+          v-bind:id="ride.id"
+          v-on:click="onRideClick"
+        >
+            <p>Ride: {{ ride.id }} <span class="uppercase font-bold" v-if="clickCounter > 0">- clicked</span></p>
             <p>Price: {{ ride.price }} EUR</p>
-        </div>
+        </button>
     </div>
 </template>
 
 <script>
 export default {
     name: 'Ride',
-    props: ['ride']
+    props: ['ride'],
+    data() {
+        return {
+            clickCounter: 0
+        }
+    },
+    methods: {
+        onRideClick() {
+            alert('display duration + end time');
+            this.clickCounter += 1;
+        }
+    }
 };
 </script>
