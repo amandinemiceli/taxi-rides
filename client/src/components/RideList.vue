@@ -21,7 +21,6 @@ import axios from 'axios';
 export default {
     name: 'RideList',
     components: { Ride },
-    props: ['ride'],
     data() {
         return {
             title: 'Here are the different rides available!',
