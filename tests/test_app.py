@@ -1,7 +1,7 @@
-import pytest
-import json
+import pytest, json
+
+from api.models.ride import Ride
 import api.settings as app_settings
-import api.app as api
 
 from tests.conftest import app, client
 
@@ -38,3 +38,13 @@ def test_get_ride_none(client):
     response_data = json.loads(response.get_data(as_text=True))
     assert 'message' in response_data
     assert isinstance(response_data['message'], str)
+
+
+def test_ride_class(client):
+    distance   = 2
+    start_time = "2020-06-19T13:01:17.031Z"
+    duration   = 9000
+    new_ride = Ride(distance, start_time, duration)
+    assert new_ride.distance == distance
+    assert new_ride.start_time == start_time
+    assert new_ride.duration == duration
