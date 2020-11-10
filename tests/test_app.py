@@ -86,18 +86,51 @@ def test_get_human_readable_ride_duration(client, duration, expected_readable_du
     assert new_ride.get_human_readable_duration() == expected_readable_duration
 
 
-@pytest.mark.parametrize("duration, expected_end_time", [
-    (9000, "2020-06-19T16:11:17.031Z"),
-    (7000, "2020-06-19T15:37:57.031Z"),
-    (6000, "2020-06-19T15:21:17.031Z"),
-    (4500, "2020-06-19T14:56:17.031Z"),
-    (3000, "2020-06-19T14:31:17.031Z"),
-    (2500, "2020-06-19T14:22:57.031Z"),
-    (1000, "2020-06-19T13:57:57.031Z"),
-    (230, "2020-06-19T13:45:07.031Z"),
+@pytest.mark.parametrize("start_time, duration, expected_end_time", [
+    ("2020-11-06T13:41:17.031Z", 9000, "2020-11-06T16:11:17.031Z"),
+    ("2020-11-06T13:41:17.031Z", 7000, "2020-11-06T15:37:57.031Z"),
+    ("2020-11-06T13:41:17.031Z", 6000, "2020-11-06T15:21:17.031Z"),
+    ("2020-11-06T13:41:17.031Z", 4500, "2020-11-06T14:56:17.031Z"),
+    ("2020-11-06T13:41:17.031Z", 3000, "2020-11-06T14:31:17.031Z"),
+    ("2020-11-06T13:41:17.031Z", 2500, "2020-11-06T14:22:57.031Z"),
+    ("2020-11-06T13:41:17.031Z", 1000, "2020-11-06T13:57:57.031Z"),
+    ("2020-11-06T13:41:17.031Z", 230, "2020-11-06T13:45:07.031Z"),
+    ("2020-11-06T23:41:17.031Z", 9000, "2020-11-07T02:11:17.031Z"),
+    ("2020-11-06T23:59:59.031Z", 2100, "2020-11-07T00:34:59.031Z"),
 ])
-def test_get_end_time_ride(client, duration, expected_end_time):
-    distance   = 2
-    start_time = "2020-06-19T13:41:17.031Z"
-    new_ride = Ride(distance, start_time, duration)
+def test_get_end_time_ride(client, start_time, duration, expected_end_time):
+    new_ride = Ride(2, start_time, duration)
     assert new_ride.get_end_time() == expected_end_time
+
+
+@pytest.mark.parametrize("start_time, expected_result", {
+    ("2020-11-06T11:28:05.031Z", False),
+    ("2020-11-06T15:03:45.031Z", False),
+    ("2020-11-06T15:59:59.031Z", False),
+    ("2020-11-06T16:00:00.031Z", True),
+    ("2020-11-06T18:59:59.031Z", True),
+    ("2020-11-06T19:00:00.031Z", False),
+    ("2020-11-06T01:57:57.031Z", False),
+    ("2020-11-06T05:22:35.031Z", False),
+})
+def test_is_busy_hour(client, start_time, expected_result):
+    new_ride = Ride(1, start_time, 3000)
+    assert new_ride.is_busy_hour() == expected_result
+
+
+@pytest.mark.parametrize("start_time, expected_result", {
+    ("2020-11-06T11:28:05.031Z", False),
+    ("2020-11-06T15:03:45.031Z", False),
+    ("2020-11-06T18:44:23.031Z", False),
+    ("2020-11-06T19:59:59.031Z", False),
+    ("2020-11-06T20:00:00.031Z", True),
+    ("2020-11-06T01:39:12.031Z", True),
+    ("2020-11-06T05:22:35.031Z", True),
+    ("2020-11-06T05:59:59.031Z", True),
+    ("2020-11-06T06:00:00.031Z", False),
+    ("2020-11-06T12:23:51.031Z", False),
+
+})
+def test_is_night_hour(client, start_time, expected_result):
+    new_ride = Ride(1, start_time, 3000)
+    assert new_ride.is_night_hour() == expected_result
