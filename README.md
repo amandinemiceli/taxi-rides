@@ -39,6 +39,7 @@ $ npm install
 1 . Start the Flask Api server-side application:
 
 ```
+$ cd api
 $ python app.py
 ```
 
