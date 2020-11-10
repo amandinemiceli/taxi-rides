@@ -1,6 +1,6 @@
 <template>
     <div id="app">
-        <h1 class="text-2xl">Taxi Rides</h1>
+        <h1 class="text-3xl">Taxi Rides</h1>
         <router-view/>
     </div>
 </template>

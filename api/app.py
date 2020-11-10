@@ -2,6 +2,7 @@ from flask import Flask, jsonify
 from flask_cors import CORS
 
 import api.settings as app_settings
+from api.models.ride import Ride
 
 app = Flask(__name__)
 app.config.from_object(__name__)
@@ -39,16 +40,33 @@ def get_all_rides():
 
 @app.route('/rides/<int:ride_id>', methods=['GET'])
 def get_ride(ride_id):
-    for ride in app_settings.RIDES:
-        for key in ride:
-            if key == 'id' and ride['id'] == ride_id:
-                return jsonify(
-                    {
-                        'status_code': 200,
-                        'success': True,
-                        'data': ride
-                    }
-                ), 200
+    if isinstance(ride_id, int):
+        try:
+            rides = app_settings.RIDES
+        except AttributeError:
+            return jsonify(
+                {
+                    'status_code': 404,
+                    'success': False,
+                    'message': 'Error. Failed to retrieve rides.'
+                }
+            ), 404
+
+        for ride in rides:
+            for key in ride:
+                if key == 'id' and ride['id'] == ride_id:
+                    new_ride = Ride(ride['distance'], ride['startTime'], ride['duration'])
+                    current_ride = dict()
+                    current_ride['readableDuration'] = new_ride.get_human_readable_duration()
+                    current_ride['endTime'] = new_ride.get_end_time()
+
+                    return jsonify(
+                        {
+                            'status_code': 200,
+                            'success': True,
+                            'data': current_ride
+                        }
+                    ), 200
 
     return jsonify(
         {
