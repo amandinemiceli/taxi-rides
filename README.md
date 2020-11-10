@@ -1,6 +1,6 @@
 # taxi-rides
 
-This Flask Api/Vue.js application gives an overview of taxi rides with their costs.
+This Flask Api-Vue.js application provides an overview of taxi rides with their costs.
 
 ### Installation
 ##### Before you start
@@ -25,6 +25,7 @@ $ git clone https://github.com/amandinemiceli/taxi-rides.git
 $ cd taxi-rides  
 $ python3 -m venv . 
 $ source bin/activate
+$ pip install -r requirements.txt
 ```
    
 3 . Install JS dependencies
