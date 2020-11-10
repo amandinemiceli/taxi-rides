@@ -1,8 +1,8 @@
 from flask import Flask, jsonify
 from flask_cors import CORS
 
-import api.settings as app_settings
-from api.models.ride import Ride
+import settings as app_settings
+from models.ride import Ride
 
 app = Flask(__name__)
 app.config.from_object(__name__)

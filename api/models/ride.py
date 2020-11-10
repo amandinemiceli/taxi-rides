@@ -1,6 +1,6 @@
 from datetime import datetime, timedelta
 
-import api.settings as app_settings
+import settings as app_settings
 
 
 class Ride:
