@@ -29,11 +29,17 @@ def get_all_rides():
             }
         ), 404
 
+    all_rides = []
+    for ride in rides:
+        current_ride = Ride(ride['distance'], ride['startTime'], ride['duration'])
+        ride['cost'] = current_ride.calculate_ride_cost()
+        all_rides.append(ride)
+
     return jsonify(
         {
             'status_code': 200,
             'success': True,
-            'data': rides
+            'data': all_rides
         }
     ), 200
 

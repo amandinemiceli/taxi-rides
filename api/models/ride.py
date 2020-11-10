@@ -33,3 +33,12 @@ class Ride:
         if int(app_settings.NIGHT_END_HOUR) * 60 <= self.__convert_minutes_from_iso8601() < int(app_settings.NIGHT_START_HOUR) * 60:
             return False
         return True
+
+    def calculate_ride_cost(self):
+        ride_cost = app_settings.INITIAL_CHARGE
+        ride_cost += self.distance * app_settings.COST_PER_MILE
+        if self.is_busy_hour():
+            ride_cost += app_settings.BUSY_EXTRA_COST
+        if self.is_night_hour():
+            ride_cost += app_settings.NIGHT_EXTRA_COST
+        return ride_cost

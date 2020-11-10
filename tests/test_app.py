@@ -125,7 +125,7 @@ def test_is_busy_hour(client, start_time, expected_result):
     ("2020-11-06T19:59:59.031Z", False),
     ("2020-11-06T20:00:00.031Z", True),
     ("2020-11-06T01:39:12.031Z", True),
-    ("2020-11-06T05:22:35.031Z", True),
+    ("2020-11-06T03:22:35.031Z", True),
     ("2020-11-06T05:59:59.031Z", True),
     ("2020-11-06T06:00:00.031Z", False),
     ("2020-11-06T12:23:51.031Z", False),
@@ -134,3 +134,73 @@ def test_is_busy_hour(client, start_time, expected_result):
 def test_is_night_hour(client, start_time, expected_result):
     new_ride = Ride(1, start_time, 3000)
     assert new_ride.is_night_hour() == expected_result
+
+
+@pytest.fixture
+def ride_cost_per_mile():
+    ride_cost = app_settings.COST_PER_MILE
+    return ride_cost
+
+
+@pytest.mark.parametrize("distance, expected_cost", [
+    (0, 0),
+    (1, 2.5),
+    (3, 7.5),
+    (5, 12.5),
+    (7, 17.5),
+])
+def test_ride_cost_distance_only(client, ride_cost_per_mile, distance, expected_cost):
+    ride_cost = ride_cost_per_mile * distance
+    assert ride_cost == expected_cost
+
+
+@pytest.mark.parametrize("distance, expected_cost", [
+    (0, 1),
+    (5, 13.5),
+    (7, 18.5),
+    (1, 3.5),
+    (2, 6),
+    (10, 26),
+    (7, 18.5),
+    (3, 8.5),
+    (8, 21),
+    (25, 63.5),
+    (5, 13.5),
+    (4, 11),
+    (161, 403.5),
+    (13, 33.5),
+    (6, 16),
+    (44, 111),
+    (250, 626),
+    (33, 83.5),
+    (806, 2016),
+])
+def test_ride_cost_without_extra(client, ride_cost_per_mile, distance, expected_cost):
+    ride_cost = app_settings.INITIAL_CHARGE
+    ride_cost += ride_cost_per_mile * distance
+    assert ride_cost == expected_cost
+
+
+@pytest.mark.parametrize("distance, start_time, duration, expected_cost", [
+    (0, "2020-11-06T11:28:05.031Z", 0, 1),
+    (2, "2020-11-06T15:03:45.031Z", 500, 6),
+    (10, "2020-11-06T15:59:59.031Z", 1000, 26),
+    (5, "2020-11-06T16:00:00.031Z", 2500, 14.5),
+    (7, "2020-11-06T18:59:59.031Z", 7000, 19.5),
+    (3, "2020-11-06T19:00:00.031Z", 6300, 8.5),
+    (8, "2020-11-06T01:57:57.031Z", 150, 21.5),
+    (25, "2020-11-06T05:22:35.031Z", 390, 64),
+    (5, "2020-11-06T11:28:05.031Z", 2150, 13.5),
+    (4, "2020-11-06T15:03:45.031Z", 999, 11),
+    (161, "2020-11-06T18:44:23.031Z", 5600, 404.5),
+    (1, "2020-11-06T19:59:59.031Z", 1760, 3.5),
+    (13, "2020-11-06T20:00:00.031Z", 3450, 34),
+    (6, "2020-11-06T01:39:12.031Z", 620, 16.5),
+    (44, "2020-11-06T03:22:35.031Z", 2050, 111.5),
+    (250, "2020-11-06T05:59:59.031Z", 8000, 626.5),
+    (33, "2020-11-06T06:00:00.031Z", 7100, 83.5),
+    (806, "2020-11-06T12:23:51.031Z", 9000, 2016),
+])
+def test_calculate_ride_cost(client, ride_cost_per_mile, distance, start_time, duration, expected_cost):
+    new_ride = Ride(distance, start_time, duration)
+    assert new_ride.calculate_ride_cost() == expected_cost
